@@ -1,0 +1,10 @@
+.env
+
+.vscode/
+env-gen/
+env/
+venv/
+ENV/
+
+env.bak/
+venv.bak/
