@@ -5,7 +5,7 @@ env-gen/
 env/
 venv/
 ENV/
-secret/*.*
+secret/gg-ecommerce-*.json
 
 env.bak/
 venv.bak/
