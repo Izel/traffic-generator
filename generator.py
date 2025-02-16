@@ -50,9 +50,7 @@ async def read_messages(websocket):
         print(response)
 
 
-async def push_message(message, project_id, topic_name):
-    publisher = pubsub.PublisherClient()
-    topic_path = publisher.topic_path(project_id, topic_name)
+async def push_message(message, topic_path, publisher):
     message = message.encode("utf-8")
     future = publisher.publish(topic_path, data=message)
     return future.result()
@@ -60,9 +58,10 @@ async def push_message(message, project_id, topic_name):
 
 async def generator():
     uri = "wss://ws.blockchain.info/inv"
-    trx_time = 180
+    trx_time = 20
     envs = load_envs()
-    print(envs["PROJECT_ID"], envs["TOPIC_NAME"])
+    print("Project: {0} Topic: {1} ".format(envs["PROJECT_ID"], envs["TOPIC_NAME"]))
+
     async with connect(uri) as websocket:
         # Validate connection and subscribe to unconfirmed transactions
         try:
@@ -74,11 +73,22 @@ async def generator():
 
         # Read messages for trx_time minutes
         try:
-            await asyncio.wait_for(read_messages(websocket), timeout=trx_time)
+            publisher = pubsub.PublisherClient()
+            topic_path = publisher.topic_path(envs["PROJECT_ID"], envs["TOPIC_NAME"])
+            while True:
+                message = await asyncio.wait_for(
+                    websocket.recv(websocket), timeout=trx_time
+                )
+                await push_message(message, topic_path, publisher)
+                print(f"Message pushed to Pub/Sub: {message}\n")
         except asyncio.TimeoutError:
             print(
                 f"-- Stopped after successfully receiving transactions for {trx_time} seconds. Timeout activated."
             )
+            return
+        except Exception as e:
+            print(f"Error: {e}")
+            return
 
 
 if __name__ == "__main__":
