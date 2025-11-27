@@ -2,10 +2,16 @@
 
 .vscode/
 env-gen/
-env/
-venv/
+.env/
+.venv/
 ENV/
+env/
 secret/gg-ecommerce-*.json
 
 env.bak/
 venv.bak/
+venv.bak/
+
+.terraform
+.terraform.lock.hcl
+.terraform.*
