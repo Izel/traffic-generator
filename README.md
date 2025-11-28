@@ -24,7 +24,7 @@ Activate the virtual environment
 
     folder_name/Scripts/activate.bat  // for Windows cmd console
     folder_name/Scripts/Activate.ps1  // for Windows Powershell console
-    folder_name/bin/activate // for Linux and MacOs 
+    source folder_name/bin/activate // for Linux and MacOs 
 
 ```
 Install GCP CLI
